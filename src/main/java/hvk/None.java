@@ -5,7 +5,7 @@ import static robocode.util.Utils.normalRelativeAngleDegrees;
 import robocode.Robot;
 
 /**
- * This robot finds a corner on the field and freezes there
+ * This robot goes to a corner
  */
 public class None extends Robot {
     private static int corner;
