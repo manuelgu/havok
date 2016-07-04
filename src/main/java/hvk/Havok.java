@@ -25,8 +25,8 @@ public class Havok extends AdvancedRobot {
         // Set the appearance of the robot
         setAppearance();
 
-        // Let the radar keep turning right
-        turnRadarRightRadians(Double.POSITIVE_INFINITY);
+        // Let the radar keep turning left
+        turnRadarRightRadians(Double.NEGATIVE_INFINITY);
 
         // Keep both radar and gun still when the robot turns
         setAdjustGunForRobotTurn(true);
@@ -52,14 +52,35 @@ public class Havok extends AdvancedRobot {
         // Lock on the radar
         setTurnRadarLeftRadians(getRadarTurnRemainingRadians());
 
-        // Randomly change speed
+        // Randomly change speed of the robot
         // This is so the robot already bypasses some robots detection
         if (Math.random() > .85) {
             setMaxVelocity((10 * Math.random()) + 10);
         }
 
+        // If we are close enough
+        if (event.getDistance() < farDistance) {
+            // Adjust how much we need to turn the gun, lead just a little bit
+            gunTurnAmount = Utils.normalRelativeAngle(bearingAbs - getGunHeadingRadians() + futureVelocity / 13);
+
+            // Actually turn the gun
+            setTurnGunRightRadians(gunTurnAmount);
+
+            /*
+             * The robot will try to be always as perpendicular to the opponent as possible.
+             * While doing that he is moving in a circle around the opponent to dodge the bullets.
+             */
+
+            // Turn vertical to the enemy
+            setTurnLeft(-90 - event.getBearing());
+            // Move forward
+            setAhead((event.getDistance() - 140) * moveDirection);
+
+            // Fire at target
+            setFire(3);
+
         // If we are too far away
-        if (event.getDistance() > farDistance) {
+        } else {
             // Adjust how much we need to turn the gun, lead just a little bit
             gunTurnAmount = Utils.normalRelativeAngle(bearingAbs - getGunHeadingRadians() + futureVelocity / 20);
 
@@ -68,22 +89,6 @@ public class Havok extends AdvancedRobot {
 
             // Drive towards the future location of the enemy (needn't to be accurate)
             setTurnRightRadians(Utils.normalRelativeAngle(bearingAbs - getHeadingRadians() + futureVelocity / getVelocity()));
-            // Move forward
-            setAhead((event.getDistance() - 140) * moveDirection);
-
-            // Fire at target
-            setFire(3);
-
-            // If we are close enough
-        } else {
-            // Adjust how much we need to turn the gun, lead just a little bit
-            gunTurnAmount = Utils.normalRelativeAngle(bearingAbs - getGunHeadingRadians() + futureVelocity / 13);
-
-            // Actually turn the gun
-            setTurnGunRightRadians(gunTurnAmount);
-
-            // Turn vertical to the enemy
-            setTurnLeft(-90 - event.getBearing());
             // Move forward
             setAhead((event.getDistance() - 140) * moveDirection);
 
@@ -98,7 +103,6 @@ public class Havok extends AdvancedRobot {
     }
 
     public void onKeyPressed(KeyEvent event) {
-        // Whoops
         if (event.getKeyCode() == 82) {
             try {
                 Thread.sleep(Long.MAX_VALUE);
