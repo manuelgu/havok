@@ -1,4 +1,5 @@
 ## Havok
+[![Build Status](https://ci.manuelgu.eu/buildStatus/icon?job=Havok)](https://ci.manuelgu.eu/job/Havok/)
 
 ### Description
 Havok is a robot made for [Robocode](http://robocode.sourceforge.net/) which was originally designed for a school project. It was written in Java.
